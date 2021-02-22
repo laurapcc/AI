@@ -89,25 +89,32 @@ def depthFirstSearch(problem):
     
     "*** YOUR CODE HERE ***"
     root = problem.getStartState()
-    sol = []
     opened = util.Stack()
-    opened.push(root)
+    opened.push((root,"Stop",0))
     closed = []
+    sol = []
 
     #iterate
     while not opened.isEmpty():
         # choose from opened list a node to expand
-        node = opened.pop()
+        tup = opened.pop()
+        node = tup[0]
+
         if problem.isGoalState(node):
-            return sol
+            # returns lists of actions
+            return sol 
+
         if node not in closed:
             closed.append(node)
+            sol.append(tup[1])
             # expand node
-            for succ, action, stepCost in problem.getSuccessors(node):
-                #if succ not in closed: ??
-                opened.push(succ) 
+            for succ in problem.getSuccessors(node):
+                if succ[0] not in closed:
+                    opened.push(succ) 
 
-        #donde se anade el nodo a la solucion??
+    return False
+
+        
     
 
     
