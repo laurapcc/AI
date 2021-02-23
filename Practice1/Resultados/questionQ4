@@ -1,0 +1,17 @@
+python3 pacman.py -l openMaze -p SearchAgent
+With DFS on openMaze it tours horizontally around all the blocks that lead to the goal state.
+In other words, it zig-zags horizontally till a solution is found.
+********** Check if optimal (probably not) **********
+
+
+python3 pacman.py -l openMaze -p SearchAgent -a fn=bfs
+With BFS it goes directly to the target traicing straight lines, first down, left, down and left again.
+********** Check if optimal (it may be) **********
+
+
+python3 pacman.py -l openMaze -p SearchAgent -a fn=ucs
+With UCS it does the same as BFS (pretty much).
+
+
+python3 pacman.py -l openMaze -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+With AStar the same as the 2 before. Look into the red squares patterns.

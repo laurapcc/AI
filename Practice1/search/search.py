@@ -81,56 +81,118 @@ def depthFirstSearch(problem):
 
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
-    """
 
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    
-    "*** YOUR CODE HERE ***"
+    """
+
     root = problem.getStartState()
+    rootNode = util.Node(root, "Stop", 0, None)
+
     opened = util.Stack()
-    opened.push((root,"Stop",0))
+    opened.push(rootNode)
     closed = []
     sol = []
 
-    #iterate
+    # Iterate
     while not opened.isEmpty():
-        # choose from opened list a node to expand
-        tup = opened.pop()
-        node = tup[0]
+        # Choose from opened list a node to expand
+        node = opened.pop()
+        nodePos, nodeAct, nodeCost = node.getTuple()
 
-        if problem.isGoalState(node):
-            # returns lists of actions
-            return sol 
+        if problem.isGoalState(nodePos):
+            # Creates and returns lists of actions
+            while node.getParent() is not None:
+                sol.append(node.getTuple()[1])
+                node = node.getParent()
+
+            sol.reverse()
+            return sol
 
         if node not in closed:
             closed.append(node)
-            sol.append(tup[1])
-            # expand node
-            for succ in problem.getSuccessors(node):
-                if succ[0] not in closed:
-                    opened.push(succ) 
+
+            # Expand node
+            for succ in problem.getSuccessors(nodePos):
+                nodeSucc = util.Node(succ[0], succ[1], succ[2], node)
+                if nodeSucc not in closed:
+                    opened.push(nodeSucc)
 
     return False
 
-        
-    
-
-    
-
-
-    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    root = problem.getStartState()
+    rootNode = util.Node(root, "Stop", 0, None)
+
+    opened = util.Queue()
+    opened.push(rootNode)
+    closed = []
+    sol = []
+
+    # Iterate
+    while not opened.isEmpty():
+        # Choose from opened list a node to expand
+        node = opened.pop()
+        nodePos, nodeAct, nodeCost = node.getTuple()
+
+        if problem.isGoalState(nodePos):
+            # Creates and returns lists of actions
+            while node.getParent() is not None:
+                sol.append(node.getTuple()[1])
+                node = node.getParent()
+
+            sol.reverse()
+            return sol
+
+        if node not in closed:
+            closed.append(node)
+
+            # Expand node
+            for succ in problem.getSuccessors(nodePos):
+                nodeSucc = util.Node(succ[0], succ[1], succ[2], node)
+                if nodeSucc not in closed:
+                    opened.push(nodeSucc)
+
+    return False
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    root = problem.getStartState()
+    rootNode = util.Node(root, "Stop", 0, None)
+
+    opened = util.PriorityQueue()
+    opened.push(rootNode, rootNode.getTuple()[2])
+    closed = []
+    sol = []
+
+    # Iterate
+    while not opened.isEmpty():
+        # Choose from opened list a node to expand
+        node = opened.pop()
+        nodePos, nodeAct, nodeCost = node.getTuple()
+
+        if problem.isGoalState(nodePos):
+            # Creates and returns lists of actions
+            while node.getParent() is not None:
+                sol.append(node.getTuple()[1])
+                node = node.getParent()
+
+            sol.reverse()
+            return sol
+
+        if node not in closed:
+            closed.append(node)
+
+            # Expand node
+            for succ in problem.getSuccessors(nodePos):
+                nodeSucc = util.Node(succ[0], succ[1], nodeCost + succ[2], node)
+                if nodeSucc not in closed:
+                    opened.push(nodeSucc, nodeSucc.getTuple()[2])
+
+    return False
 
 def nullHeuristic(state, problem=None):
     """
@@ -141,8 +203,40 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    root = problem.getStartState()
+    rootNode = util.Node(root, "Stop", 0, None)
+
+    opened = util.PriorityQueue()
+    opened.push(rootNode, rootNode.getTuple()[2])
+    closed = []
+    sol = []
+
+    # Iterate
+    while not opened.isEmpty():
+        # Choose from opened list a node to expand
+        node = opened.pop()
+        nodePos, nodeAct, nodeCost = node.getTuple()
+
+        if problem.isGoalState(nodePos):
+            # Creates and returns lists of actions
+            while node.getParent() is not None:
+                sol.append(node.getTuple()[1])
+                node = node.getParent()
+
+            sol.reverse()
+            return sol
+
+        if node not in closed:
+            closed.append(node)
+
+            # Expand node
+            for succ in problem.getSuccessors(nodePos):
+                heur = heuristic(succ[0], problem)
+                nodeSucc = util.Node(succ[0], succ[1], nodeCost + succ[2], node)
+                if nodeSucc not in closed:
+                    opened.push(nodeSucc, nodeSucc.getTuple()[2] + heur)
+
+    return False
 
 
 # Abbreviations
