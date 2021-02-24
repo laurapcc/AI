@@ -70,7 +70,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -85,10 +86,10 @@ def depthFirstSearch(problem):
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
+
 
     root = problem.getStartState()
-    rootNode = util.Node(root, "Stop", 0, None)
+    rootNode = Node(root, "Stop", 0, None)
 
     opened = util.Stack()
     opened.push(rootNode)
@@ -115,17 +116,19 @@ def depthFirstSearch(problem):
 
             # Expand node
             for succ in problem.getSuccessors(nodePos):
-                nodeSucc = util.Node(succ[0], succ[1], succ[2], node)
+                nodeSucc = Node(succ[0], succ[1], succ[2], node)
                 if nodeSucc not in closed:
                     opened.push(nodeSucc)
 
     return False
+    """
+    return generalSearch(problem, util.Stack())
 
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
+    """Search the shallowest nodes in the search tree first.
     root = problem.getStartState()
-    rootNode = util.Node(root, "Stop", 0, None)
+    rootNode = Node(root, "Stop", 0, None)
 
     opened = util.Queue()
     opened.push(rootNode)
@@ -152,16 +155,20 @@ def breadthFirstSearch(problem):
 
             # Expand node
             for succ in problem.getSuccessors(nodePos):
-                nodeSucc = util.Node(succ[0], succ[1], succ[2], node)
+                nodeSucc = Node(succ[0], succ[1], succ[2], node)
                 if nodeSucc not in closed:
                     opened.push(nodeSucc)
 
     return False
+    """
+    return generalSearch(problem, util.Queue())
+
+
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
+    """Search the node of least total cost first.
     root = problem.getStartState()
-    rootNode = util.Node(root, "Stop", 0, None)
+    rootNode = Node(root, "Stop", 0, None)
 
     opened = util.PriorityQueue()
     opened.push(rootNode, rootNode.getTuple()[2])
@@ -188,11 +195,14 @@ def uniformCostSearch(problem):
 
             # Expand node
             for succ in problem.getSuccessors(nodePos):
-                nodeSucc = util.Node(succ[0], succ[1], nodeCost + succ[2], node)
+                nodeSucc = Node(succ[0], succ[1], nodeCost + succ[2], node)
                 if nodeSucc not in closed:
                     opened.push(nodeSucc, nodeSucc.getTuple()[2])
 
     return False
+    """
+    return generalSearch(problem, util.PriorityQueue(), True)
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -202,9 +212,9 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
+    """Search the node that has the lowest combined cost and heuristic first.
     root = problem.getStartState()
-    rootNode = util.Node(root, "Stop", 0, None)
+    rootNode = Node(root, "Stop", 0, None)
 
     opened = util.PriorityQueue()
     opened.push(rootNode, rootNode.getTuple()[2])
@@ -232,11 +242,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             # Expand node
             for succ in problem.getSuccessors(nodePos):
                 heur = heuristic(succ[0], problem)
-                nodeSucc = util.Node(succ[0], succ[1], nodeCost + succ[2], node)
+                nodeSucc = Node(succ[0], succ[1], nodeCost + succ[2], node)
                 if nodeSucc not in closed:
                     opened.push(nodeSucc, nodeSucc.getTuple()[2] + heur)
 
     return False
+    """
+
+    return generalSearch(problem, util.PriorityQueue(), True, heuristic)
 
 
 # Abbreviations
@@ -244,3 +257,109 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+
+
+###########################################
+# generalSearch: function that generalizes
+# all the search problems 
+###########################################
+def generalSearch(problem, opened, priority=False, heuristic=nullHeuristic):
+    root = problem.getStartState()
+    rootNode = Node(root, "Stop", 0, None)
+    if priority:
+        cost = 0
+    else:
+        cost = None
+
+    push(opened, (rootNode, cost))
+    closed = []
+    sol = []
+
+    # Iterate
+    while not opened.isEmpty():
+        # Choose from opened list a node to expand
+        node = opened.pop()
+        nodePos, nodeAct, nodeCost = node.getTuple()
+
+        if problem.isGoalState(nodePos):
+            # Creates and returns lists of actions
+            while node.getParent() is not None:
+                sol.append(node.getTuple()[1])
+                node = node.getParent()
+
+            sol.reverse()
+            return sol
+
+        if node not in closed:
+            closed.append(node)
+
+            # Expand node
+            for succ in problem.getSuccessors(nodePos):
+                nodeSucc = Node(succ[0], succ[1], nodeCost + succ[2], node)
+                if nodeSucc not in closed:
+                    if priority:
+                        heur = heuristic(succ[0], problem)
+                        cost = nodeSucc.getTuple()[2] + heur
+                    else:
+                        cost = None
+                    push(opened, (nodeSucc, cost))
+
+    return False
+
+
+def push(opened, node):
+    if node[1] is None:
+        opened.push(node[0])
+    else:
+        opened.push(node[0], node[1])
+
+
+####################################
+# Node: a node of the search tree
+# with a link to his parent node,
+# the action to get to the node and
+# the cost of the action
+####################################
+class Node:
+    def __init__(self, node, action, cost, parent):
+        self.info = node
+        self.action = action
+        self.cost = cost
+        self.parent = parent
+
+    def __eq__(self, node):
+        return self.info == node.info
+
+    def __str__(self):
+        return "Node: " + str(self.info) + ", " + self.action + ", " + str(self.cost)
+
+    def getTuple(self):
+        return self.info, self.action, self.cost
+
+    def getParent(self):
+        return self.parent
+
+
+###############################################
+# Function to calculate the number of walls   #
+# between a given state and a given corner    #
+# Arguments: walls : matrix with the walls    #
+#                    of the map               #
+#            state : position of the pacman   #
+#            corner: corner to go             #
+# Ouput: number of walls between the position #
+#        and the given corner                 #
+###############################################
+
+def countWalls(walls, state, corner):
+    posx, posy = state[0], state[1]
+    xwalls1 = len(filter(walls[posy][posx::]))-1
+    ywalls2 = len(filter(walls[posy][posx::]))-1
+
+
+    ywalls1 = len(filter(walls[posy][posx::]))-1
+    xwalls2 = len(filter(walls[posy][posx::]))-1
+
+
+def getColumn(matrix, i):
+    return [row[i] for row in matrix]

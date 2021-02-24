@@ -671,29 +671,3 @@ def unmutePrint():
 
     sys.stdout = _ORIGINAL_STDOUT
     # sys.stderr = _ORIGINAL_STDERR
-
-
-####################################
-# Node: a node of the search tree
-# with a link to his parent node,
-# the action to get to the node and
-# the cost of the action
-####################################
-class Node:
-    def __init__(self, node, action, cost, parent):
-        self.info = node
-        self.action = action
-        self.cost = cost
-        self.parent = parent
-
-    def __eq__(self, node):
-        return self.info == node.info
-
-    def __str__(self):
-        return "Node: " + str(self.info) + ", " + self.action + ", " + str(self.cost)
-
-    def getTuple(self):
-        return self.info, self.action, self.cost
-
-    def getParent(self):
-        return self.parent

@@ -333,6 +333,8 @@ class CornersProblem(search.SearchProblem):
                 cost = 1
                 successors.append((nextState, action, cost))
 
+        self._expanded += 1
+
         return successors
 
     def getCostOfActions(self, actions):
@@ -362,22 +364,40 @@ def cornersHeuristic(state, problem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
-    corners = problem.corners # These are the corner coordinates
-    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    # These are the corner coordinates
+    corners = problem.corners
 
+    # These are the walls of the maze, as a Grid (game.py)
+    walls = problem.walls  
     "*** YOUR CODE HERE ***"
-    
+
     # dist x + dist y a la esquina mas cercana
-    # visited corners 
+    # visited corners
+    if state[0] in corners:
+        return 0
 
+    minDist = 999999
+    for c in state[1]:
+        dist = util.manhattanDistance(c, state[0])
+        if minDist > dist:
+            minDist = dist
 
-    return 0 # Default to trivial solution
+    totalDist = 0
+    for c1 in state[1]:
+        for c2 in state[1]:
+            totalDist += util.manhattanDistance(c1, c2)
+
+    totalDist = totalDist/2
+
+    return minDist + totalDist
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
         self.searchFunction = lambda prob: search.aStarSearch(prob, cornersHeuristic)
         self.searchType = CornersProblem
+
 
 class FoodSearchProblem:
     """
