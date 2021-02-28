@@ -317,7 +317,7 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            x,y = state[0]
+            x, y = state[0]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
@@ -326,10 +326,10 @@ class CornersProblem(search.SearchProblem):
                 nextNode = (nextx, nexty)
                 nextCorners = state[1].copy()
 
-                # if nextNode is a corner, delete it from the nextCorners of successors
+                # if nextNode is corner, delete from the nextCorners of succ
                 if nextNode in nextCorners:
                     nextCorners.remove(nextNode)
-                nextState = (nextNode,nextCorners)
+                nextState = (nextNode, nextCorners)
                 cost = 1
                 successors.append((nextState, action, cost))
 
@@ -373,23 +373,22 @@ def cornersHeuristic(state, problem):
 
     # dist x + dist y a la esquina mas cercana
     # visited corners
-    if state[0] in corners:
+    if state[0] in corners and len(state[1]) == 0:
         return 0
 
     minDist = 999999
+    newNode = None
     for c in state[1]:
         dist = util.manhattanDistance(c, state[0])
         if minDist > dist:
+            newNode = c
             minDist = dist
 
-    totalDist = 0
-    for c1 in state[1]:
-        for c2 in state[1]:
-            totalDist += util.manhattanDistance(c1, c2)
+    newCorners = state[1].copy()
+    newCorners.remove(newNode)
+    newState = (newNode, newCorners)
 
-    totalDist = totalDist/2
-
-    return minDist + totalDist
+    return minDist + cornersHeuristic(newState, problem)
 
 
 class AStarCornersAgent(SearchAgent):
