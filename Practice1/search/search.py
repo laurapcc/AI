@@ -1,3 +1,14 @@
+##############################################
+#                                            #
+# Authors: Jorge de Miguel Pires             #
+#          jorge.miguelp@estudiante.uam.es   #
+#                                            #
+#          Laura de Paz Carbajo              #
+#          laura.pazc@estudiante.uam.es      #
+#                                            #
+##############################################
+
+
 # search.py
 # ---------
 # Licensing Information:  You are free to use or extend these projects for
