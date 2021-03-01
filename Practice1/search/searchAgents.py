@@ -51,6 +51,7 @@ import util
 import time
 import search
 
+
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
 
@@ -61,16 +62,16 @@ class GoWestAgent(Agent):
         else:
             return Directions.STOP
 
+
 #######################################################
 # This portion is written for you, but will only work #
 #       after you fill in parts of search.py          #
 #######################################################
-
 class SearchAgent(Agent):
     """
     This very general search agent finds a path using a supplied search
-    algorithm for a supplied search problem, then returns actions to follow that
-    path.
+    algorithm for a supplied search problem, then returns actions to
+    follow that path.
 
     As a default, this agent runs DFS on a PositionSearchProblem to find
     location (1,1)
@@ -272,6 +273,7 @@ def euclideanHeuristic(position, problem, info={}):
     xy2 = problem.goal
     return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
 
+
 #####################################################
 # This portion is incomplete.  Time to write code!  #
 #####################################################
@@ -290,11 +292,11 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
-        self.corners = ((1,1), (1,top), (right, 1), (right, top))
+        self.corners = ((1, 1), (1, top), (right, 1), (right, top))
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
-        self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
+        self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
@@ -317,10 +319,11 @@ class CornersProblem(search.SearchProblem):
         Returns successor states, the actions they require, and a cost of 1.
 
          As noted in search.py:
-            For a given state, this should return a list of triples, (successor,
-            action, stepCost), where 'successor' is a successor to the current
-            state, 'action' is the action required to get there, and 'stepCost'
-            is the incremental cost of expanding to that successor
+            For a given state, this should return a list of triples,
+            (successor, action, stepCost), where 'successor' is a
+            successor to the current state, 'action' is the action
+            required to get there, and 'stepCost' is the incremental
+            cost of expanding to that successor
         """
 
         successors = []
@@ -352,12 +355,15 @@ class CornersProblem(search.SearchProblem):
         Returns the cost of a particular sequence of actions.  If those actions
         include an illegal move, return 999999.  This is implemented for you.
         """
-        if actions == None: return 999999
-        x,y= self.startingPosition
+        if actions is None:
+            return 999999
+
+        x, y = self.startingPosition
         for action in actions:
             dx, dy = Actions.directionToVector(action)
             x, y = int(x + dx), int(y + dy)
-            if self.walls[x][y]: return 999999
+            if self.walls[x][y]:
+                return 999999
         return len(actions)
 
 
@@ -378,8 +384,7 @@ def cornersHeuristic(state, problem):
     corners = problem.corners
 
     # These are the walls of the maze, as a Grid (game.py)
-    walls = problem.walls  
-    "*** YOUR CODE HERE ***"
+    walls = problem.walls
 
     # dist x + dist y a la esquina mas cercana
     # visited corners
