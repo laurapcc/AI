@@ -140,17 +140,17 @@ ucs = uniformCostSearch
 # generalSearch: function that generalizes
 # all the search problems
 ###########################################
-def generalSearch(problem, opened, priority=False, heuristic=nullHeuristic):
+def generalSearch(problem, opened, cost=None, heuristic=nullHeuristic):
     root = problem.getStartState()
     rootNode = Node(root, "Stop", 0, None)
 
     # Depending on the structure it uses different costs
-    if priority:
-        cost = 0
+    if cost is None:
+        opened.push(rootNode)
     else:
-        cost = None
+        cost = 0
+        opened.push(rootNode, cost)
 
-    push(opened, (rootNode, cost))
     closed = []
     sol = []
 
@@ -177,25 +177,14 @@ def generalSearch(problem, opened, priority=False, heuristic=nullHeuristic):
                 nodeSucc = Node(succ[0], succ[1], nodeCost + succ[2], node)
                 if nodeSucc not in closed:
                     # Push the successor to the opened list
-                    if priority:
+                    if cost is None:
+                        opened.push(nodeSucc)
+                    else:
                         heur = heuristic(succ[0], problem)
                         cost = nodeSucc.getTuple()[2] + heur
-                    else:
-                        cost = None
-                    push(opened, (nodeSucc, cost))
+                        opened.push(nodeSucc, cost)
 
     return False
-
-
-###################################
-# push: function that generalizes
-# the structure.push() method
-###################################
-def push(opened, node):
-    if node[1] is None:
-        opened.push(node[0])
-    else:
-        opened.push(node[0], node[1])
 
 
 ####################################
