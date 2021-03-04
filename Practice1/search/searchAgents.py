@@ -297,9 +297,6 @@ class CornersProblem(search.SearchProblem):
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
         self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
-        # Please add any code here which you would like to use
-        # in initializing the problem
-        "*** YOUR CODE HERE ***"
 
     def getStartState(self):
         """
@@ -339,9 +336,10 @@ class CornersProblem(search.SearchProblem):
                 nextNode = (nextx, nexty)
                 nextCorners = state[1].copy()
 
-                # if nextNode is corner, delete from the nextCorners of succ
+                # If nextNode is corner, delete from the nextCorners of succ
                 if nextNode in nextCorners:
                     nextCorners.remove(nextNode)
+
                 nextState = (nextNode, nextCorners)
                 cost = 1
                 successors.append((nextState, action, cost))
@@ -386,7 +384,6 @@ def cornersHeuristic(state, problem):
     # These are the walls of the maze, as a Grid (game.py)
     walls = problem.walls
 
-    # dist x + dist y a la esquina mas cercana
     # visited corners
     if state[0] in corners and len(state[1]) == 0:
         return 0
