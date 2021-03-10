@@ -62,6 +62,24 @@ player_minimax4 = Player(
     ),
 )
 
+player_alphaBeta = Player(
+    name='AlphaBeta',
+    strategy=MinimaxAlphaBetaStrategy(
+        heuristic=heuristic,
+        max_depth_minimax=3,
+        verbose=0,
+    ),
+)
+
+player_alphaBeta2 = Player(
+    name='AlphaBeta_2',
+    strategy=MinimaxAlphaBetaStrategy(
+        heuristic=heuristic,
+        max_depth_minimax=4,
+        verbose=0,
+    ),
+)
+
 
 # Manual vs manual player
 # player_a, player_b = player_manual, player_manual2
@@ -69,10 +87,11 @@ player_minimax4 = Player(
 # Manual vs minimax player
 # player_a, player_b = player_manual, player_minimax4
 
+# Minimax vs Minimax player
+# player_a, player_b = player_minimax3, player_minimax4
 
-# minimax vs minimax player
-player_a, player_b = player_minimax3, player_minimax4
-
+# Minimax_AlphaBeta vs Minimax_AlphaBeta player
+player_a, player_b = player_minimax4, player_alphaBeta2
 
 """
 Here you can initialize the player that moves first

@@ -205,5 +205,81 @@ class MinimaxAlphaBetaStrategy(Strategy):
         """Compute next state in the game."""
 
         # NOTE <YOUR CODE HERE>
+        # return next_state
+
+        successors = self.generate_successors(state)
+
+        minimax_value = -np.inf
+
+        for successor in successors:
+            successor_minimax_value = self._min_value(
+                successor,
+                self.max_depth_minimax,
+                -np.inf,
+                np.inf,
+            )
+            if (successor_minimax_value > minimax_value):
+                minimax_value = successor_minimax_value
+                next_state = successor
 
         return next_state
+
+    def _min_value(
+        self,
+        state: TwoPlayerGameState,
+        depth: int,
+        alpha: int,
+        beta: int,
+    ) -> float:
+        """Min step of the minimax algorithm."""
+        if state.end_of_game or depth == 0:
+            minimax_value = self.heuristic.evaluate(state)
+
+        else:
+            minimax_value = np.inf
+
+            successors = self.generate_successors(state)
+            for successor in successors:
+                successor_minimax_value = self._max_value(
+                    successor, depth - 1, alpha, beta,
+                )
+                if (successor_minimax_value < minimax_value):
+                    minimax_value = successor_minimax_value
+
+                if (minimax_value < alpha):
+                    return minimax_value
+
+                if (minimax_value < beta):
+                    beta = minimax_value
+
+        return minimax_value
+
+    def _max_value(
+        self,
+        state: TwoPlayerGameState,
+        depth: int,
+        alpha: int,
+        beta: int,
+    ) -> float:
+        """Max step of the minimax algorithm."""
+        if state.end_of_game or depth == 0:
+            minimax_value = self.heuristic.evaluate(state)
+
+        else:
+            minimax_value = -np.inf
+
+            successors = self.generate_successors(state)
+            for successor in successors:
+                successor_minimax_value = self._min_value(
+                    successor, depth - 1, alpha, beta,
+                )
+                if (successor_minimax_value > minimax_value):
+                    minimax_value = successor_minimax_value
+
+                if (minimax_value > beta):
+                    return minimax_value
+
+                if (minimax_value > alpha):
+                    alpha = minimax_value
+
+        return minimax_value

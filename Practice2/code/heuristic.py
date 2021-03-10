@@ -18,7 +18,7 @@ from game import TwoPlayerGameState
 
 
 class Heuristic(object):
-    """Encapsulation of the evaluation fucnction."""
+    """Encapsulation of the evaluation function."""
 
     def __init__(
         self,
