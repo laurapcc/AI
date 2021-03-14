@@ -13,7 +13,11 @@ from game import Player, TwoPlayerGameState, TwoPlayerMatch
 from heuristic import simple_evaluation_function
 from tictactoe import TicTacToe
 from tournament import StudentHeuristic, Tournament
-from reversi import Reversi
+from reversi import (
+    Reversi,
+    from_array_to_dictionary_board,
+    from_dictionary_to_array_board,
+)
 
 
 class PieceDifference(StudentHeuristic):
@@ -34,7 +38,7 @@ class PieceDifference(StudentHeuristic):
 class Mobility(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "Mobility heuristic"
+        return "Mobility"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         """successors = state.generate_successor()
@@ -43,13 +47,17 @@ class Mobility(StudentHeuristic):
         elif state.is_player_max(state.player2):
             return -len(successors)
         raise ValueError('Player MAX not defined')"""
-        return 0
+        if state.is_player_max(state.player1):
+            return 1
+        elif state.is_player_max(state.player2):
+            return -1
+        raise ValueError('Player MAX not defined')
 
 
 class Corners(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "Corners heuristic"
+        return "Corners"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         game = state.game
@@ -72,16 +80,37 @@ class Corners(StudentHeuristic):
 
 
 def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
-    initial_board = None
-    dim_board = 8
+    # Board at an intermediate state of the game.
+    initial_board = (
+        ['..B.B..',
+         '.WBBW..',
+         'WBWBB..',
+         '.W.WWW.',
+         '.BBWBWB']
+    )
+
+    # NOTE Uncoment to use standard initial board.
+    # initial_board = None  # Standard initial board.
+
+    if initial_board is None:
+        height, width = 8, 8
+    else:
+        height = len(initial_board)
+        width = len(initial_board[0])
+        try:
+            initial_board = from_array_to_dictionary_board(initial_board)
+        except ValueError:
+            raise ValueError('Wrong configuration of the board')
+        else:
+            print("Successfully initialised board from array")
 
     initial_player = player1
 
     game = Reversi(
         player1=player1,
         player2=player2,
-        height=dim_board,
-        width=dim_board,
+        height=height,
+        width=width,
     )
 
     game_state = TwoPlayerGameState(
@@ -94,7 +123,7 @@ def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
 
 
 tour = Tournament(max_depth=3, init_match=create_match)
-strats = {'opt1': [PieceDifference], 'opt2': [Mobility], 'opt3': [Corners]}
+strats = {'opt1': [PieceDifference], 'opt2': [Corners], 'opt3': [Corners]}
 
 n = 3
 scores, totals, names = tour.run(

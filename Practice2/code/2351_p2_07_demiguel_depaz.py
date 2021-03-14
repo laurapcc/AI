@@ -27,7 +27,7 @@ class PieceDifference(StudentHeuristic):
             return -value
         raise ValueError('Player MAX not defined')
 
-
+"""
 class Mobility(StudentHeuristic):
 
     def get_name(self) -> str:
@@ -39,6 +39,45 @@ class Mobility(StudentHeuristic):
             return len(successors)
         elif state.is_player_max(state.player2):
             return -len(successors)
+        raise ValueError('Player MAX not defined')
+"""
+
+
+class Edges(StudentHeuristic):
+
+    def get_name(self) -> str:
+        return "Mobility heuristic"
+
+    def evaluation_function(self, state: TwoPlayerGameState) -> float:
+        game = state.game
+        board = state.board
+        assert isinstance(game, Reversi)  # only Reversi has height and width
+        height = game.height
+        width = game.width
+
+        # COMPROBAR QUE LAS X, WIDTH, HEIGHT Y LIMITES DEL RANGE ESTEN BIEN
+        edgeLeft = [board.get((x, 0)) for x in range(0, height)]
+        edgeRight = [board.get((x, width)) for x in range(0, height)]
+        edgeTop = [board.get((0, x)) for x in range(0, width)]
+        edgeBottom = [board.get((height, x)) for x in range(0, width)]
+
+        edges1 = edgeLeft.count(game.player1.label) + \
+            edgeRight.count(game.player1.label) + \
+            edgeTop.count(game.player1.label) + \
+            edgeBottom.count(game.player1.label)
+
+        edges2 = edgeLeft.count(game.player2.label) + \
+            edgeRight.count(game.player2.label) + \
+            edgeTop.count(game.player2.label) + \
+            edgeBottom.count(game.player2.label)
+
+        if edges1 + edges2 == 0:
+            return 0
+        value = 100 * (edges1 - edges2) / (edges1 + edges2)
+        if state.is_player_max(state.player1):
+            return value
+        elif state.is_player_max(state.player2):
+            return -value
         raise ValueError('Player MAX not defined')
 
 
