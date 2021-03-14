@@ -55,11 +55,10 @@ class Edges(StudentHeuristic):
         height = game.height
         width = game.width
 
-        # COMPROBAR QUE LAS X, WIDTH, HEIGHT Y LIMITES DEL RANGE ESTEN BIEN
-        edgeLeft = [board.get((x, 0)) for x in range(0, height)]
-        edgeRight = [board.get((x, width)) for x in range(0, height)]
-        edgeTop = [board.get((0, x)) for x in range(0, width)]
-        edgeBottom = [board.get((height, x)) for x in range(0, width)]
+        edgeLeft = [board.get((x, 1)) for x in range(1, height+1)]
+        edgeRight = [board.get((x, width)) for x in range(1, height+1)]
+        edgeTop = [board.get((1, x)) for x in range(1, width+1)]
+        edgeBottom = [board.get((height, x)) for x in range(1, width+1)]
 
         edges1 = edgeLeft.count(game.player1.label) + \
             edgeRight.count(game.player1.label) + \
