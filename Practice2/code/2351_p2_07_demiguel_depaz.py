@@ -1,10 +1,16 @@
-"""Heuristics for tournament.
-
-Authors:
-    Jorge de Miguel Pires <jorge.miguelp@estudiante.uam.es>
-    Laura de Paz Carbajo <laura.pazc@estudiante.uam.es>
-
-"""
+###############################################
+#                                             #
+#        Heuristics for tournament            #
+#                                             #
+# Authors: Jorge de Miguel Pires              #
+#          <jorge.miguelp@estudiante.uam.es>  #
+#                                             #
+#          Laura de Paz Carbajo               #
+#          <laura.pazc@estudiante.uam.es>     #
+# Team 07                                     #
+# Group 2351                                  #
+#                                             #
+###############################################
 
 import time
 from game import TwoPlayerGameState
@@ -13,13 +19,17 @@ from tournament import StudentHeuristic
 from reversi import Reversi
 
 
+"""
+Heuristic class whose evaluation function calculates the difference of each 
+player pieces with regard to the total amount of pieces placed in the board 
+"""
 class PieceDifference(StudentHeuristic):
 
     def get_name(self) -> str:
         return "Piece difference heuristic"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        scores = state.scores  # o score(state)[1]
+        scores = state.scores 
         value = 100 * (scores[0] - scores[1]) / (scores[0] + scores[1])
         if state.is_player_max(state.player1):
             return value
@@ -27,22 +37,11 @@ class PieceDifference(StudentHeuristic):
             return -value
         raise ValueError('Player MAX not defined')
 
+
 """
-class Mobility(StudentHeuristic):
-
-    def get_name(self) -> str:
-        return "Mobility heuristic"
-
-    def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        successors = state.generate_successor()
-        if state.is_player_max(state.player1):
-            return len(successors)
-        elif state.is_player_max(state.player2):
-            return -len(successors)
-        raise ValueError('Player MAX not defined')
+Heuristic class whose evaluation function calculates the amount of pieces each
+player has on the edges of the board and computes its difference
 """
-
-
 class Edges(StudentHeuristic):
 
     def get_name(self) -> str:
@@ -80,6 +79,12 @@ class Edges(StudentHeuristic):
         raise ValueError('Player MAX not defined')
 
 
+"""
+Heuristic class whose evaluation function calculates the amount of pieces each
+player has on the corners of the board and computes its difference
+A player should aim to capture these positions, as they can never be replaced
+with the opponent's pieces.
+"""
 class Corners(StudentHeuristic):
 
     def get_name(self) -> str:
