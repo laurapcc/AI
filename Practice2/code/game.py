@@ -347,7 +347,7 @@ class TwoPlayerMatch(object):
         self,
         initial_state: Optional[TwoPlayerGameState] = None,
         n_plies_max: int = 500,
-        max_sec_per_move: float = 10,
+        max_sec_per_move: float = 5,
         gui: bool = False,
     ) -> None:
         self.initial_state = initial_state

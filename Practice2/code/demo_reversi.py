@@ -62,6 +62,7 @@ player_minimax4 = Player(
     ),
 )
 
+
 player_alphaBeta = Player(
     name='AlphaBeta',
     strategy=MinimaxAlphaBetaStrategy(
@@ -87,8 +88,9 @@ player_alphaBeta2 = Player(
 # Manual vs minimax player
 # player_a, player_b = player_manual, player_minimax4
 
-# Minimax vs Minimax player
-# player_a, player_b = player_minimax3, player_minimax4
+
+# minimax vs minimax player
+#player_a, player_b = player_minimax3, player_minimax4
 
 # Minimax_AlphaBeta vs Minimax_AlphaBeta player
 player_a, player_b = player_minimax4, player_alphaBeta2
@@ -144,7 +146,7 @@ game_state = TwoPlayerGameState(
 match = TwoPlayerMatch(
     game_state,
     max_sec_per_move=1000,
-    gui=False,
+    gui=True,
 )
 
 # Play match

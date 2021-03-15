@@ -1,6 +1,8 @@
 """Illustration of tournament.
+
 Authors:
     Alejandro Bellogin <alejandro.bellogin@uam.es>
+
 """
 
 from __future__ import annotations  # For Python 3.7
@@ -63,7 +65,7 @@ def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
         initial_player=initial_player,
     )
 
-    return TwoPlayerMatch(game_state, max_sec_per_move=5, gui=False)
+    return TwoPlayerMatch(game_state, max_sec_per_move=1000, gui=False)
 
 
 tour = Tournament(max_depth=3, init_match=create_match)
@@ -85,7 +87,7 @@ print(
 # print(totals)
 # print(scores)
 
-print('\ttotal:', end='')
+print('\t\ttotal:', end='')
 for name1 in names:
     print('\t%s' % (name1), end='')
 print()
@@ -93,7 +95,7 @@ for name1 in names:
     print('%s\t%d:' % (name1, totals[name1]), end='')
     for name2 in names:
         if name1 == name2:
-            print('\t---', end='')
+            print('\t\t---', end='')
         else:
-            print('\t%d' % (scores[name1][name2]), end='')
+            print('\t\t%d' % (scores[name1][name2]), end='')
     print()

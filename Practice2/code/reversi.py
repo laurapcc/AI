@@ -42,8 +42,7 @@ class Reversi(TwoPlayerGame):
 
     # Private functions
     def _capture_enemy_in_dir(self, board: dict, move, player_label: Any, delta_x_y) -> list:
-        enemy = self.player2.label if player_label == self.player1.label \
-                else self.player1.label
+        enemy = self.player2.label if player_label == self.player1.label else self.player1.label
         (delta_x, delta_y) = delta_x_y
         x, y = move
         x, y = x + delta_x, y + delta_y
