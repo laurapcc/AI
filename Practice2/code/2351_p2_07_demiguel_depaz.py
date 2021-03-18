@@ -28,11 +28,10 @@ player pieces with regard to the total amount of pieces placed in the board
 class PieceDifference(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "Piece_difference"
+        return "P07_Heuristic1"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        scores = state.scores
-        value = 100 * (scores[0] - scores[1]) / (scores[0] + scores[1])
+        value = evalPieces(state)
         if state.is_player_max(state.player1):
             return value
         elif state.is_player_max(state.player2):
@@ -49,7 +48,7 @@ player has on the edges of the board and computes its difference
 class Edges(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "Edges"
+        return "P07_Heuristic2"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         value = evalEdges(state)
@@ -71,7 +70,7 @@ with the opponent's pieces.
 class Corners(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "Corners"
+        return "P07_Heuristic3"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         value = evalCorners(state)
@@ -91,7 +90,7 @@ player has on the edges of the board and computes its difference
 class EdgesAndCorners(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "EdgesAndCorners"
+        return "P07_Heuristic4"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         edges = evalEdges(state)
@@ -108,9 +107,45 @@ class EdgesAndCorners(StudentHeuristic):
             Corners().evaluation_function(state)
 
 
-# Private functions
+"""
+Heuristic class whose evaluation function calculates the amount of pieces,
+pieces in the edge of the bord and pieces in corners that both players
+have and computes its difference
 """
 
+
+class PiecesEdgesCorners(StudentHeuristic):
+    def get_name(self) -> str:
+        return "PiecesEdgesCorners"
+
+    def evaluation_function(self, state: TwoPlayerGameState) -> float:
+        pieces = evalPieces(state)
+        edges = evalEdges(state)
+        corners = evalCorners(state)
+        value = pieces + edges + corners
+
+        if state.is_player_max(state.player1):
+            return value
+        elif state.is_player_max(state.player2):
+            return -value
+        raise ValueError('Player MAX not defined')
+
+
+# Private functions
+"""
+evalPieces(): calculates the percentage of the pieces in
+the board that belong to the player that has the turn
+"""
+
+
+def evalPieces(state):
+    scores = state.scores
+    return 100 * (scores[0] - scores[1]) / (scores[0] + scores[1])
+
+
+"""
+evalEdges(): calculates the percentage of the pieces in the
+edges of the board that belong to the player that has the turn
 """
 
 
@@ -142,7 +177,8 @@ def evalEdges(state):
 
 
 """
-
+evalCorners(): calculates the percentage of the pieces in the
+corners of the board that belong to the player that has the turn
 """
 
 
