@@ -269,6 +269,7 @@ def get_corners(state):
 def eval_stability(state):
     stable1 = player_stability(state, state.game.player1)
     stable2 = player_stability(state, state.game.player2)
+    #print("stable1 =",stable1, "  stable2 =",stable2)
 
     if stable1 + stable2 == 0:
         return 0
@@ -316,6 +317,8 @@ def neighbours(height, width, pos):
     y, x = pos
     for dx in range(-1, 2):
         for dy in range(-1, 2):
+            if dx == 0 and dy == 0:
+                continue  # same position
             col, row = x + dx, y + dy
             if (col >= 0 and col < width) and (row >= 0 and row < height):
                 adjacent.append((row, col))
@@ -328,21 +331,21 @@ def is_stable(pos, matrix):
 
     def horizontal():
         return x <= 0 or x >= width-1 or \
-            matrix[y][x-1] == 1 or matrix[y][x+1] == 1
+            matrix[y-1][x-2] == 1 or matrix[y-1][x] == 1
 
     def vertical():
         return y <= 0 or y >= height-1 or \
-            matrix[y-1][x] == 1 or matrix[y+1][x] == 1
+            matrix[y-2][x-1] == 1 or matrix[y][x-1] == 1
 
     def diag_neg():
         return x <= 0 or x >= width-1 or \
             y <= 0 or y >= height-1 or \
-            matrix[y-1][x-1] == 1 or matrix[y+1][x+1] == 1
+            matrix[y-2][x-2] == 1 or matrix[y][x] == 1
 
     def diag_pos():
         return x <= 0 or x >= width-1 or \
             y <= 0 or y >= height-1 or \
-            matrix[y+1][x-1] == 1 or matrix[y-1][x+1] == 1
+            matrix[y][x-2] == 1 or matrix[y-2][x] == 1
 
     return horizontal() and vertical() and diag_neg() and diag_pos()
 

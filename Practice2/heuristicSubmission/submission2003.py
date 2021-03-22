@@ -24,7 +24,6 @@ Heuristic class whose evaluation function calculates the difference of each
 player pieces with regard to the total amount of pieces placed in the board
 """
 
-
 class PieceDifference(StudentHeuristic):
 
     def get_name(self) -> str:
@@ -32,48 +31,6 @@ class PieceDifference(StudentHeuristic):
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         value = evalPieces(state)
-        if state.is_player_max(state.player1):
-            return value
-        elif state.is_player_max(state.player2):
-            return -value
-        raise ValueError('Player MAX not defined')
-
-
-"""
-Heuristic class whose evaluation function calculates the amount of pieces each
-player has on the edges of the board and computes its difference
-"""
-
-
-class Edges(StudentHeuristic):
-
-    def get_name(self) -> str:
-        return "P07_Heuristic2"
-
-    def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        value = evalEdges(state)
-        if state.is_player_max(state.player1):
-            return value
-        elif state.is_player_max(state.player2):
-            return -value
-        raise ValueError('Player MAX not defined')
-
-
-"""
-Heuristic class whose evaluation function calculates the amount of pieces each
-player has on the corners of the board and computes its difference
-A player should aim to capture these positions, as they can never be replaced
-with the opponent's pieces.
-"""
-
-
-class Corners(StudentHeuristic):
-
-    def get_name(self) -> str:
-        return "P07_Heuristic3"
-
-    def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        value = evalCorners(state)
         if state.is_player_max(state.player1):
             return value
         elif state.is_player_max(state.player2):
@@ -103,8 +60,6 @@ class EdgesAndCorners(StudentHeuristic):
             return -value
         raise ValueError('Player MAX not defined')
 
-        return Edges().evaluation_function(state) + \
-            Corners().evaluation_function(state)
 
 
 """
@@ -116,7 +71,7 @@ have and computes its difference
 
 class PiecesEdgesCorners(StudentHeuristic):
     def get_name(self) -> str:
-        return "P07_Heuristic5"
+        return "PiecesEdgesCorners"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         pieces = evalPieces(state)
