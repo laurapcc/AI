@@ -1,8 +1,6 @@
 """Illustration of tournament.
-
 Authors:
     Alejandro Bellogin <alejandro.bellogin@uam.es>
-
 """
 
 from __future__ import annotations  # For Python 3.7
@@ -24,16 +22,25 @@ from ourHeuristics import(
     PiecesEdgesCorners,
     Stability,
     Weights1,
+    WeightsAndTimes,
+    WeightsAndTimes2,
 )
 
 
 def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
-    initial_board = (
+    """initial_board = (
         ['..B.B..',
          '.WBBW..',
          'WBWBB..',
          '.W.WWW.',
          '.BBWBWB']
+    )"""
+    initial_board = (
+        ['.....',
+         '..BW.',
+         '..WB.',
+         '.....',
+         '.....']
     )
     height = len(initial_board)
     width = len(initial_board[0])
@@ -61,9 +68,10 @@ def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
 
 
 tour = Tournament(max_depth=3, init_match=create_match)
-strats = {#'opt1': [PieceDifference], 'opt2': [Edges],
-          #'opt3': [Corners], 'opt4': [EdgesAndCorners],
-          'opt5': [PiecesEdgesCorners], 'opt6': [Weights1]}
+strats = {# 'opt1': [PieceDifference], 'opt2': [Edges],
+          # 'opt3': [Corners], 'opt4': [EdgesAndCorners],
+          'opt5': [PiecesEdgesCorners], 'opt6': [Weights1],
+          'opt7': [WeightsAndTimes], 'opt8': [WeightsAndTimes2]}
 # 'optx': [Stability]
 
 n = 5

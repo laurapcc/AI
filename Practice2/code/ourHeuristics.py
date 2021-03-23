@@ -14,7 +14,10 @@
 
 import time
 import numpy as np
-from game import TwoPlayerGameState
+from game import(
+    TwoPlayerGameState,
+    Player,
+)
 
 from tournament import StudentHeuristic
 from reversi import Reversi
@@ -30,7 +33,7 @@ player pieces with regard to the total amount of pieces placed in the board
 class PieceDifference(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "Piece_difference"
+        return "P07_Heuristic1"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         """
@@ -54,7 +57,7 @@ player has on the edges of the board and computes its difference
 class Edges(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "Edges"
+        return "P07_Heuristic2"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         """
@@ -107,7 +110,7 @@ with the opponent's pieces.
 class Corners(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "Corners"
+        return "P07_Heuristic3"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         """
@@ -147,7 +150,7 @@ difference
 class EdgesAndCorners(StudentHeuristic):
 
     def get_name(self) -> str:
-        return "EdgesAndCorners"
+        return "P07_Heuristic4"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         """
@@ -175,7 +178,7 @@ have and computes its difference
 
 class PiecesEdgesCorners(StudentHeuristic):
     def get_name(self) -> str:
-        return "PiecesEdgesCorners"
+        return "P07_Heuristic5"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         pieces = eval_pieces(state)
@@ -194,9 +197,10 @@ class PiecesEdgesCorners(StudentHeuristic):
 Heuristic class that ---------
 """
 
+
 class Weights1(StudentHeuristic):
     def get_name(self) -> str:
-        return "Weights1"
+        return "P07_Heuristic6"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         pieces = eval_pieces(state)
@@ -215,16 +219,24 @@ class Weights1(StudentHeuristic):
 Heuristic class that ---------
 """
 
+
 class WeightsAndTimes(StudentHeuristic):
     def get_name(self) -> str:
-        return "Weights1"
+        return "P07_Heuristic7"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
         pieces = eval_pieces(state)
         edges = eval_edges(state)
         corners = eval_corners(state)
         # ---- timessss ---
-        value = 0.4 * pieces + 0.4 * edges + 0.2 * corners
+        turn = self.turn_number(state)
+
+        if turn < 20:
+            value = 0.2 * pieces + 0.4 * edges + 0.4 * corners
+        elif 20 < turn < 40:
+            value = 0.4 * pieces + 0.4 * edges + 0.2 * corners
+        else:
+            value = 0.4 * pieces + 0.2 * edges + 0.4 * corners
 
         if state.is_player_max(state.player1):
             return value
@@ -232,11 +244,42 @@ class WeightsAndTimes(StudentHeuristic):
             return -value
         raise ValueError('Player MAX not defined')
 
+    def turn_number(self, state: TwoPlayerGameState) -> int:
+        return state.scores[0] + state.scores[1] - 4
+
+
+class WeightsAndTimes2(StudentHeuristic):
+    def get_name(self) -> str:
+        return "P07_Heuristic8"
+
+    def evaluation_function(self, state: TwoPlayerGameState) -> float:
+        pieces = eval_pieces(state)
+        edges = eval_edges(state)
+        corners = eval_corners(state)
+        moves = num_possible_moves(state)
+        turn = self.turn_number(state)
+
+        if turn < 20:
+            value = 0.1 * pieces + 0.4 * edges + 0.4 * corners + 0.1*moves
+        elif 20 < turn < 40:
+            value = 0.2 * pieces + 0.3 * edges + 0.4 * corners + 0.2*moves
+        else:
+            value = 0.4 * pieces + 0.1 * edges + 0.1 * corners + 0.4*moves
+
+        if state.is_player_max(state.player1):
+            return value
+        elif state.is_player_max(state.player2):
+            return -value
+        raise ValueError('Player MAX not defined')
+
+    def turn_number(self, state: TwoPlayerGameState) -> int:
+        return state.scores[0] + state.scores[1] - 4
 
 
 """
 Heuristic class that ---------
 """
+
 
 class Stability(StudentHeuristic):
     def get_name(self) -> str:
@@ -253,12 +296,12 @@ class Stability(StudentHeuristic):
 
 
 # Private functions
-def eval_pieces(state):
+def eval_pieces(state: TwoPlayerGameState):
     scores = state.scores
     return 100 * (scores[0] - scores[1]) / (scores[0] + scores[1])
 
 
-def eval_edges(state):
+def eval_edges(state: TwoPlayerGameState):
     game = state.game
     board = state.board
     assert isinstance(game, Reversi)  # only Reversi has height and width
@@ -285,7 +328,7 @@ def eval_edges(state):
     return 100 * (edges1 - edges2) / (edges1 + edges2)
 
 
-def eval_corners(state):
+def eval_corners(state: TwoPlayerGameState):
     game = state.game
     corners = get_corners(state)
     # corners = [board.get((1, 1)), board.get((width, 1)),
@@ -297,7 +340,7 @@ def eval_corners(state):
     return 100 * (corners1 - corners2) / (corners1 + corners2)
 
 
-def get_corners(state):
+def get_corners(state: TwoPlayerGameState):
     game = state.game
     board = state.board
     assert isinstance(game, Reversi)  # only Reversi has height and width
@@ -307,17 +350,23 @@ def get_corners(state):
             board.get((1, height)), board.get((width, height))]
 
 
-def eval_stability(state):
+# Returns the number of possible moves
+def num_possible_moves(state: TwoPlayerGameState):
+    return len(state.game._get_valid_moves(state.board,
+                                           state.next_player.label))
+
+
+def eval_stability(state: TwoPlayerGameState):
     stable1 = player_stability(state, state.game.player1)
     stable2 = player_stability(state, state.game.player2)
-    #print("stable1 =",stable1, "  stable2 =",stable2)
+    # print("stable1 =",stable1, "  stable2 =",stable2)
 
     if stable1 + stable2 == 0:
         return 0
     return 100 * (stable1 - stable2) / (stable1 + stable2)
 
 
-def player_stability(state, player):
+def player_stability(state: TwoPlayerGameState, player: Player):
     game = state.game
     board = state.board
     corners = get_corners(state)
@@ -389,25 +438,3 @@ def is_stable(pos, matrix):
             matrix[y][x-2] == 1 or matrix[y-2][x] == 1
 
     return horizontal() and vertical() and diag_neg() and diag_pos()
-
-
-""" Funcion Jorge
-def pieceIsStable(state, piece):
-    game = state.game
-    board = state.board
-    assert isinstance(game, Reversi)  # only Reversi has height and width
-    height = game.height
-    width = game.width
-    corners = [board.get((1, 1)), board.get((width, 1)),
-               board.get((1, height)), board.get((width, height))]
-
-    if board.get(piece) in corners:
-        return True
-
-    x = piece[0]
-    y = piece[1]
-    if x == 0:
-        closePieces = []
-    return False
-
-"""
