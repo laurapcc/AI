@@ -191,11 +191,52 @@ class PiecesEdgesCorners(StudentHeuristic):
 
 
 """
-Heuristic class whose evaluation function calculates the amount of pieces,
-pieces in the edge of the bord and pieces in corners that both players
-have and computes its difference
+Heuristic class that ---------
 """
 
+class Weights1(StudentHeuristic):
+    def get_name(self) -> str:
+        return "Weights1"
+
+    def evaluation_function(self, state: TwoPlayerGameState) -> float:
+        pieces = eval_pieces(state)
+        edges = eval_edges(state)
+        corners = eval_corners(state)
+        value = 0.4 * pieces + 0.4 * edges + 0.2 * corners
+
+        if state.is_player_max(state.player1):
+            return value
+        elif state.is_player_max(state.player2):
+            return -value
+        raise ValueError('Player MAX not defined')
+
+
+"""
+Heuristic class that ---------
+"""
+
+class WeightsAndTimes(StudentHeuristic):
+    def get_name(self) -> str:
+        return "Weights1"
+
+    def evaluation_function(self, state: TwoPlayerGameState) -> float:
+        pieces = eval_pieces(state)
+        edges = eval_edges(state)
+        corners = eval_corners(state)
+        # ---- timessss ---
+        value = 0.4 * pieces + 0.4 * edges + 0.2 * corners
+
+        if state.is_player_max(state.player1):
+            return value
+        elif state.is_player_max(state.player2):
+            return -value
+        raise ValueError('Player MAX not defined')
+
+
+
+"""
+Heuristic class that ---------
+"""
 
 class Stability(StudentHeuristic):
     def get_name(self) -> str:

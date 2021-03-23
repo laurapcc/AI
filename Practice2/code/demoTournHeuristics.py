@@ -23,6 +23,7 @@ from ourHeuristics import(
     EdgesAndCorners,
     PiecesEdgesCorners,
     Stability,
+    Weights1,
 )
 
 
@@ -60,11 +61,12 @@ def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
 
 
 tour = Tournament(max_depth=3, init_match=create_match)
-strats = {'opt1': [PieceDifference], 'opt2': [Edges],
-          'opt3': [Corners], 'opt4': [EdgesAndCorners],
-          'opt5': [PiecesEdgesCorners], 'opt6': [Stability]}
+strats = {#'opt1': [PieceDifference], 'opt2': [Edges],
+          #'opt3': [Corners], 'opt4': [EdgesAndCorners],
+          'opt5': [PiecesEdgesCorners], 'opt6': [Weights1]}
+# 'optx': [Stability]
 
-n = 2
+n = 5
 scores, totals, names = tour.run(
     student_strategies=strats,
     increasing_depth=False,
