@@ -194,7 +194,10 @@ class PiecesEdgesCorners(StudentHeuristic):
 
 
 """
-Heuristic class that ---------
+Heuristic class whose evaluation function calculates the amount of pieces,
+pieces in the edge of the bord and pieces in corners that both players
+have and computes its difference and then gives each of these values a 
+specific weight when computing the final value
 """
 
 
@@ -216,7 +219,11 @@ class Weights1(StudentHeuristic):
 
 
 """
-Heuristic class that ---------
+Heuristic class whose evaluation function calculates the amount of pieces,
+pieces in the edge of the bord and pieces in corners that both players
+have and computes its difference and then gives each of these values a
+specific weight when computing the final value depending on the stage
+of the game 
 """
 
 
@@ -233,7 +240,7 @@ class WeightsAndTimes(StudentHeuristic):
 
         if turn < 20:
             value = 0.2 * pieces + 0.4 * edges + 0.4 * corners
-        elif 20 < turn < 40:
+        elif 20 <= turn < 40:
             value = 0.4 * pieces + 0.4 * edges + 0.2 * corners
         else:
             value = 0.4 * pieces + 0.2 * edges + 0.4 * corners
@@ -246,6 +253,15 @@ class WeightsAndTimes(StudentHeuristic):
 
     def turn_number(self, state: TwoPlayerGameState) -> int:
         return state.scores[0] + state.scores[1] - 4
+
+
+"""
+Heuristic class whose evaluation function calculates the amount of pieces,
+pieces in the edge of the bord and pieces in corners that both players
+have and computes its difference and then gives each of these values a
+specific weight when computing the final value depending on the stage
+of the game
+"""
 
 
 class WeightsAndTimes2(StudentHeuristic):
@@ -261,7 +277,7 @@ class WeightsAndTimes2(StudentHeuristic):
 
         if turn < 20:
             value = 0.1 * pieces + 0.4 * edges + 0.4 * corners + 0.1*moves
-        elif 20 < turn < 40:
+        elif 20 <= turn < 40:
             value = 0.2 * pieces + 0.3 * edges + 0.4 * corners + 0.2*moves
         else:
             value = 0.4 * pieces + 0.1 * edges + 0.1 * corners + 0.4*moves
@@ -274,6 +290,7 @@ class WeightsAndTimes2(StudentHeuristic):
 
     def turn_number(self, state: TwoPlayerGameState) -> int:
         return state.scores[0] + state.scores[1] - 4
+
 
 
 """
