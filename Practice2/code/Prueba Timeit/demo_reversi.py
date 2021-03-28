@@ -13,7 +13,8 @@ import timeit
 from game import Player, TwoPlayerGameState, TwoPlayerMatch
 from heuristic import (
     heuristic,
-    Heuristic1
+    Heuristic1,
+    OurHeuristic,
 )
 from reversi import (
     Reversi,
@@ -94,7 +95,7 @@ player_alphaBeta2 = Player(
 timeMinMax1 = Player(
     name='timeMinMax1',
     strategy=MinimaxStrategy(
-        heuristic=Heuristic1,
+        heuristic=OurHeuristic,
         max_depth_minimax=3,
         verbose=0,
     ),
@@ -103,7 +104,7 @@ timeMinMax1 = Player(
 timeMinMax2 = Player(
     name='timeMinMax2',
     strategy=MinimaxStrategy(
-        heuristic=Heuristic1,
+        heuristic=OurHeuristic,
         max_depth_minimax=4,
         verbose=0,
     ),
@@ -113,7 +114,7 @@ timeMinMax2 = Player(
 timeAlphaBeta1 = Player(
     name='timeAlphaBeta1',
     strategy=MinimaxAlphaBetaStrategy(
-        heuristic=Heuristic1,
+        heuristic=OurHeuristic,
         max_depth_minimax=3,
         verbose=0,
     ),
@@ -122,7 +123,7 @@ timeAlphaBeta1 = Player(
 timeAlphaBeta2 = Player(
     name='timeAlphaBeta2',
     strategy=MinimaxAlphaBetaStrategy(
-        heuristic=Heuristic1,
+        heuristic=OurHeuristic,
         max_depth_minimax=4,
         verbose=0,
     ),
@@ -155,19 +156,20 @@ E.g., it can be an intermediate state.
 initial_player = player_a  # Player who moves first.
 
 # Board at an intermediate state of the game.
-initial_board = (
+"""initial_board = (
     ['..B.B..',
      '.WBBW..',
      'WBWBB..',
      '.W.WWW.',
      '.BBWBWB']
-)
+)"""
+initial_board = None
 
 # NOTE Uncoment to use standard initial board.
 # initial_board = None  # Standard initial board.
 
 if initial_board is None:
-    height, width = 8, 8
+    height, width = 6, 6
 else:
     height = len(initial_board)
     width = len(initial_board[0])
@@ -207,7 +209,7 @@ match = TwoPlayerMatch(
 
 
 # timeit command
-reps = 10
+reps = 2
 tiempo = timeit.timeit("match.play_match()",
                        setup="from __main__ import match",
                        number=reps)

@@ -276,11 +276,11 @@ class WeightsAndTimes2(StudentHeuristic):
         turn = self.turn_number(state)
 
         if turn < 20:
-            value = 0.1 * pieces + 0.4 * edges + 0.4 * corners + 0.1*moves
+            value = -0.1 * pieces + 0.5 * edges + 0.5 * corners + 0.1*moves
         elif 20 <= turn < 40:
-            value = 0.2 * pieces + 0.3 * edges + 0.4 * corners + 0.2*moves
+            value = 0.2 * pieces + 0.3 * edges + 0.4 * corners + 0.1*moves
         else:
-            value = 0.4 * pieces + 0.1 * edges + 0.1 * corners + 0.4*moves
+            value = 0.5 * pieces + 0.1 * edges + 0.2 * corners + 0.2*moves
 
         if state.is_player_max(state.player1):
             return value
