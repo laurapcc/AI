@@ -204,13 +204,14 @@ match = TwoPlayerMatch(
 )
 
 # Play match
-# scores = match.play_match()
+scores = match.play_match()
 # input('Press any key to finish.')
 
-
+"""
 # timeit command
 reps = 2
 tiempo = timeit.timeit("match.play_match()",
                        setup="from __main__ import match",
                        number=reps)
 print(tiempo, tiempo/reps)
+"""

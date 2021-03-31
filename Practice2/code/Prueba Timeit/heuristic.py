@@ -95,10 +95,29 @@ def dummy(state: TwoPlayerGameState) -> float:
 
 
 def our_evaluation_function(state: TwoPlayerGameState) -> float:
+    edges = eval_edges(state)
+    corners = eval_corners(state)
+    value = edges + corners
+
+    if state.is_player_max(state.player1):
+        return value
+    elif state.is_player_max(state.player2):
+        return -value
+    raise ValueError('Player MAX not defined')
+
+
+def our_evaluation_function2(state: TwoPlayerGameState) -> float:
     pieces = eval_pieces(state)
     edges = eval_edges(state)
     corners = eval_corners(state)
-    value = 0.4 * pieces + 0.4 * edges + 0.2 * corners
+    turn = turn_number(state)
+
+    if turn < 20:
+        value = 0.2 * pieces + 0.4 * edges + 0.4 * corners
+    elif 20 <= turn < 40:
+        value = 0.4 * pieces + 0.4 * edges + 0.2 * corners
+    else:
+        value = 0.4 * pieces + 0.2 * edges + 0.4 * corners
 
     if state.is_player_max(state.player1):
         return value
@@ -108,6 +127,10 @@ def our_evaluation_function(state: TwoPlayerGameState) -> float:
 
 
 # Private functions
+def turn_number(state: TwoPlayerGameState) -> int:
+    return state.scores[0] + state.scores[1] - 4
+
+
 def eval_pieces(state):
     scores = state.scores
     return 100 * (scores[0] - scores[1]) / (scores[0] + scores[1])
@@ -169,5 +192,5 @@ Heuristic1 = Heuristic(
 )
 OurHeuristic = Heuristic(
     name='OurHeuristic',
-    evaluation_function=our_evaluation_function,
+    evaluation_function=our_evaluation_function2,
 )

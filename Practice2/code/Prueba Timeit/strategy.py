@@ -16,6 +16,8 @@ import numpy as np
 from game import TwoPlayerGame, TwoPlayerGameState
 from heuristic import Heuristic
 
+CALLS = 0
+
 
 class Strategy(ABC):
     """Abstract base class for player's strategy."""
@@ -94,6 +96,7 @@ class MinimaxStrategy(Strategy):
         super().__init__(verbose)
         self.heuristic = heuristic
         self.max_depth_minimax = max_depth_minimax
+        self.calls = 0
 
     def next_move(
         self,
@@ -101,6 +104,7 @@ class MinimaxStrategy(Strategy):
         gui: bool = False,
     ) -> TwoPlayerGameState:
         """Compute next state in the game."""
+        global CALLS
 
         successors = self.generate_successors(state)
 
@@ -125,6 +129,7 @@ class MinimaxStrategy(Strategy):
                 print()
             print('Minimax value = {:.2g}'.format(minimax_value))
 
+        print(CALLS)
         return next_state
 
     def _min_value(
@@ -133,6 +138,11 @@ class MinimaxStrategy(Strategy):
         depth: int,
     ) -> float:
         """Min step of the minimax algorithm."""
+        global CALLS
+
+        CALLS += 1
+        # self.calls += 1
+
         if state.end_of_game or depth == 0:
             minimax_value = self.heuristic.evaluate(state)
 
@@ -161,6 +171,11 @@ class MinimaxStrategy(Strategy):
         depth: int,
     ) -> float:
         """Max step of the minimax algorithm."""
+        global CALLS
+
+        CALLS += 1
+        # self.calls += 1
+
         if state.end_of_game or depth == 0:
             minimax_value = self.heuristic.evaluate(state)
 
@@ -196,6 +211,7 @@ class MinimaxAlphaBetaStrategy(Strategy):
         super().__init__(verbose)
         self.heuristic = heuristic
         self.max_depth_minimax = max_depth_minimax
+        self.calls = 0
 
     def next_move(
         self,
@@ -222,6 +238,7 @@ class MinimaxAlphaBetaStrategy(Strategy):
                 minimax_value = successor_minimax_value
                 next_state = successor
 
+        print(CALLS)
         return next_state
 
     def _min_value(
@@ -232,6 +249,10 @@ class MinimaxAlphaBetaStrategy(Strategy):
         beta: int,
     ) -> float:
         """Min step of the minimax algorithm."""
+        global CALLS
+
+        CALLS += 1
+
         if state.end_of_game or depth == 0:
             minimax_value = self.heuristic.evaluate(state)
 
@@ -262,6 +283,10 @@ class MinimaxAlphaBetaStrategy(Strategy):
         beta: int,
     ) -> float:
         """Max step of the minimax algorithm."""
+        global CALLS
+
+        CALLS += 1
+
         if state.end_of_game or depth == 0:
             minimax_value = self.heuristic.evaluate(state)
 
