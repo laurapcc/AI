@@ -20,48 +20,25 @@ from ourHeuristics import(
     Edges,
     EdgesAndCorners,
     PiecesEdgesCorners,
-    Stability,
-    Weights1,
+    Weights,
     WeightsAndTimes,
     WeightsAndTimes2,
 )
 
 
 def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
-    """
-    initial_board = (
-        ['..B.B..',
-         '.WBBW..',
-         'WBWBB..',
-         '.W.WWW.',
-         '.BBWBWB']
-    )"""
-    initial_board = (
-        ['.....',
-         '..BW.',
-         '..WB.',
-         '.....',
-         '.....']
-    )
-    height = len(initial_board)
-    width = len(initial_board[0])
-    try:
-        initial_board = from_array_to_dictionary_board(initial_board)
-    except ValueError:
-        raise ValueError('Wrong configuration of the board')
-
     initial_player = player1
 
     game = Reversi(
         player1=player1,
         player2=player2,
-        height=height,
-        width=width,
+        height=6,
+        width=6,
     )
 
     game_state = TwoPlayerGameState(
         game=game,
-        board=initial_board,
+        board=None,
         initial_player=initial_player,
     )
 
@@ -71,9 +48,8 @@ def create_match(player1: Player, player2: Player) -> TwoPlayerMatch:
 tour = Tournament(max_depth=3, init_match=create_match)
 strats = {'opt1': [PieceDifference], 'opt2': [Edges],
           'opt3': [Corners], 'opt4': [EdgesAndCorners],
-          'opt5': [PiecesEdgesCorners], 'opt6': [Weights1],
+          'opt5': [PiecesEdgesCorners], 'opt6': [Weights],
           'opt7': [WeightsAndTimes], 'opt8': [WeightsAndTimes2]}
-# 'optx': [Stability]
 
 n = 3
 scores, totals, names = tour.run(
@@ -87,9 +63,6 @@ print(
     'Results for tournament where each game is repeated '
     + '%d=%dx2 times, alternating colors for each player' % (2 * n, n),
 )
-
-# print(totals)
-# print(scores)
 
 print('\t\t\ttotal:', end='')
 for name1 in names:

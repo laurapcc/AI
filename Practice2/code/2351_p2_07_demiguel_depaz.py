@@ -51,7 +51,7 @@ specific weight when computing the final value
 """
 
 
-class Weights1(StudentHeuristic):
+class Weights(StudentHeuristic):
     def get_name(self) -> str:
         return "P07_Heuristic6"
 
@@ -86,12 +86,12 @@ class WeightsAndTimes2(StudentHeuristic):
         edges = eval_edges(state)
         corners = eval_corners(state)
         moves = num_possible_moves(state)
-        turn = self.turn_number(state)
+        turn = turn_number(state)
 
         if turn < 20:
             value = -0.1 * pieces + 0.5 * edges + 0.5 * corners + 0.1*moves
         elif 20 <= turn < 40:
-            value = 0.2 * pieces + 0.3 * edges + 0.4 * corners + 0.1*moves
+            value = 0.1 * pieces + 0.4 * edges + 0.4 * corners + 0.1*moves
         else:
             value = 0.5 * pieces + 0.1 * edges + 0.2 * corners + 0.2*moves
 
@@ -101,11 +101,12 @@ class WeightsAndTimes2(StudentHeuristic):
             return -value
         raise ValueError('Player MAX not defined')
 
-    def turn_number(self, state: TwoPlayerGameState) -> int:
-        return state.scores[0] + state.scores[1] - 4
-
 
 # Private functions
+def turn_number(state: TwoPlayerGameState) -> int:
+    return state.scores[0] + state.scores[1] - 4
+
+
 def eval_pieces(state: TwoPlayerGameState):
     scores = state.scores
     return 100 * (scores[0] - scores[1]) / (scores[0] + scores[1])

@@ -36,10 +36,6 @@ class PieceDifference(StudentHeuristic):
         return "P07_Heuristic1"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        """
-        scores = state.scores
-        value = 100 * (scores[0] - scores[1]) / (scores[0] + scores[1])
-        """
         value = eval_pieces(state)
         if state.is_player_max(state.player1):
             return value
@@ -60,37 +56,6 @@ class Edges(StudentHeuristic):
         return "P07_Heuristic2"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        """
-        game = state.game
-        board = state.board
-        assert isinstance(game, Reversi)  # only Reversi has height and width
-        height = game.height
-        width = game.width
-
-        edgeLeft = [board.get((x, 1)) for x in range(1, height+1)]
-        edgeRight = [board.get((x, width)) for x in range(1, height+1)]
-        edgeTop = [board.get((1, x)) for x in range(1, width+1)]
-        edgeBottom = [board.get((height, x)) for x in range(1, width+1)]
-
-        edges1 = edgeLeft.count(game.player1.label) + \
-            edgeRight.count(game.player1.label) + \
-            edgeTop.count(game.player1.label) + \
-            edgeBottom.count(game.player1.label)
-
-        edges2 = edgeLeft.count(game.player2.label) + \
-            edgeRight.count(game.player2.label) + \
-            edgeTop.count(game.player2.label) + \
-            edgeBottom.count(game.player2.label)
-
-        if edges1 + edges2 == 0:
-            return 0
-        value = 100 * (edges1 - edges2) / (edges1 + edges2)
-        if state.is_player_max(state.player1):
-            return value
-        elif state.is_player_max(state.player2):
-            return -value
-        raise ValueError('Player MAX not defined')
-        """
         value = eval_edges(state)
         if state.is_player_max(state.player1):
             return value
@@ -113,25 +78,6 @@ class Corners(StudentHeuristic):
         return "P07_Heuristic3"
 
     def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        """
-        game = state.game
-        board = state.board
-        assert isinstance(game, Reversi)  # only Reversi has height and width
-        height = game.height
-        width = game.width
-        corners = [board.get((1, 1)), board.get((width, 1)),
-                   board.get((1, height)), board.get((width, height))]
-        corners1 = corners.count(game.player1.label)
-        corners2 = corners.count(game.player2.label)
-        if corners1 + corners2 == 0:
-            return 0
-        value = 100 * (corners1 - corners2) / (corners1 + corners2)
-        if state.is_player_max(state.player1):
-            return value
-        elif state.is_player_max(state.player2):
-            return -value
-        raise ValueError('Player MAX not defined')
-        """
         value = eval_corners(state)
         if state.is_player_max(state.player1):
             return value
@@ -196,12 +142,12 @@ class PiecesEdgesCorners(StudentHeuristic):
 """
 Heuristic class whose evaluation function calculates the amount of pieces,
 pieces in the edge of the bord and pieces in corners that both players
-have and computes its difference and then gives each of these values a 
+have and computes its difference and then gives each of these values a
 specific weight when computing the final value
 """
 
 
-class Weights1(StudentHeuristic):
+class Weights(StudentHeuristic):
     def get_name(self) -> str:
         return "P07_Heuristic6"
 
@@ -223,7 +169,7 @@ Heuristic class whose evaluation function calculates the amount of pieces,
 pieces in the edge of the bord and pieces in corners that both players
 have and computes its difference and then gives each of these values a
 specific weight when computing the final value depending on the stage
-of the game 
+of the game
 """
 
 
@@ -236,7 +182,7 @@ class WeightsAndTimes(StudentHeuristic):
         edges = eval_edges(state)
         corners = eval_corners(state)
         # ---- timessss ---
-        turn = self.turn_number(state)
+        turn = turn_number(state)
 
         if turn < 20:
             value = 0.2 * pieces + 0.4 * edges + 0.4 * corners
@@ -251,16 +197,13 @@ class WeightsAndTimes(StudentHeuristic):
             return -value
         raise ValueError('Player MAX not defined')
 
-    def turn_number(self, state: TwoPlayerGameState) -> int:
-        return state.scores[0] + state.scores[1] - 4
-
 
 """
 Heuristic class whose evaluation function calculates the amount of pieces,
-pieces in the edge of the bord and pieces in corners that both players
-have and computes its difference and then gives each of these values a
-specific weight when computing the final value depending on the stage
-of the game
+pieces in the edge of the bord, pieces in corners and available moves that
+both players have and computes its difference and then gives each of these
+values a specific weight when computing the final value depending on the
+stage of the game
 """
 
 
@@ -273,12 +216,12 @@ class WeightsAndTimes2(StudentHeuristic):
         edges = eval_edges(state)
         corners = eval_corners(state)
         moves = num_possible_moves(state)
-        turn = self.turn_number(state)
+        turn = turn_number(state)
 
         if turn < 20:
             value = -0.1 * pieces + 0.5 * edges + 0.5 * corners + 0.1*moves
         elif 20 <= turn < 40:
-            value = 0.2 * pieces + 0.3 * edges + 0.4 * corners + 0.1*moves
+            value = 0.1 * pieces + 0.4 * edges + 0.4 * corners + 0.1*moves
         else:
             value = 0.5 * pieces + 0.1 * edges + 0.2 * corners + 0.2*moves
 
@@ -288,31 +231,12 @@ class WeightsAndTimes2(StudentHeuristic):
             return -value
         raise ValueError('Player MAX not defined')
 
-    def turn_number(self, state: TwoPlayerGameState) -> int:
-        return state.scores[0] + state.scores[1] - 4
-
-
-
-"""
-Heuristic class that ---------
-"""
-
-
-class Stability(StudentHeuristic):
-    def get_name(self) -> str:
-        return "Stability"
-
-    def evaluation_function(self, state: TwoPlayerGameState) -> float:
-        value = eval_stability(state)
-
-        if state.is_player_max(state.player1):
-            return value
-        elif state.is_player_max(state.player2):
-            return -value
-        raise ValueError('Player MAX not defined')
-
 
 # Private functions
+def turn_number(state: TwoPlayerGameState) -> int:
+    return state.scores[0] + state.scores[1] - 4
+
+
 def eval_pieces(state: TwoPlayerGameState):
     scores = state.scores
     return 100 * (scores[0] - scores[1]) / (scores[0] + scores[1])
@@ -348,8 +272,6 @@ def eval_edges(state: TwoPlayerGameState):
 def eval_corners(state: TwoPlayerGameState):
     game = state.game
     corners = get_corners(state)
-    # corners = [board.get((1, 1)), board.get((width, 1)),
-    #           board.get((1, height)), board.get((width, height))]
     corners1 = corners.count(game.player1.label)
     corners2 = corners.count(game.player2.label)
     if corners1 + corners2 == 0:
@@ -371,87 +293,3 @@ def get_corners(state: TwoPlayerGameState):
 def num_possible_moves(state: TwoPlayerGameState):
     return len(state.game._get_valid_moves(state.board,
                                            state.next_player.label))
-
-
-def eval_stability(state: TwoPlayerGameState):
-    stable1 = player_stability(state, state.game.player1)
-    stable2 = player_stability(state, state.game.player2)
-    # print("stable1 =",stable1, "  stable2 =",stable2)
-
-    if stable1 + stable2 == 0:
-        return 0
-    return 100 * (stable1 - stable2) / (stable1 + stable2)
-
-
-def player_stability(state: TwoPlayerGameState, player: Player):
-    game = state.game
-    board = state.board
-    corners = get_corners(state)
-    # no corners captured => no stable pieces
-    captured_corners = corners.count(player.label)
-    if captured_corners == 0:
-        return 0
-
-    assert isinstance(game, Reversi)  # only Reversi has height and width
-    width, height = game.width, game.height
-
-    stab_matrix = np.zeros((height, width))
-    stab_pieces = []
-    # check corners captured by player
-    for row in [1, height]:
-        for col in [1, width]:
-            if board.get((row, col)) == player.label:
-                stab_matrix[row-1][col-1] = 1
-                stab_pieces.append((row, col))
-
-    while stab_pieces:
-        piece = stab_pieces.pop()
-        for pos in neighbours(height, width, piece):
-            y, x = pos
-            if stab_matrix[y][x] == 1:
-                continue
-            if board.get(pos) == player.label:
-                if is_stable(pos, stab_matrix):
-                    stab_matrix[y][x] = 1
-                    stab_pieces.append(pos)
-
-    # count stable pieces in matrix
-    return np.sum(stab_matrix)
-
-
-def neighbours(height, width, pos):
-    adjacent = []
-    y, x = pos
-    for dx in range(-1, 2):
-        for dy in range(-1, 2):
-            if dx == 0 and dy == 0:
-                continue  # same position
-            col, row = x + dx, y + dy
-            if (col >= 0 and col < width) and (row >= 0 and row < height):
-                adjacent.append((row, col))
-    return adjacent
-
-
-def is_stable(pos, matrix):
-    x, y = pos
-    height, width = len(matrix), len(matrix[0])
-
-    def horizontal():
-        return x <= 0 or x >= width-1 or \
-            matrix[y-1][x-2] == 1 or matrix[y-1][x] == 1
-
-    def vertical():
-        return y <= 0 or y >= height-1 or \
-            matrix[y-2][x-1] == 1 or matrix[y][x-1] == 1
-
-    def diag_neg():
-        return x <= 0 or x >= width-1 or \
-            y <= 0 or y >= height-1 or \
-            matrix[y-2][x-2] == 1 or matrix[y][x] == 1
-
-    def diag_pos():
-        return x <= 0 or x >= width-1 or \
-            y <= 0 or y >= height-1 or \
-            matrix[y][x-2] == 1 or matrix[y-2][x] == 1
-
-    return horizontal() and vertical() and diag_neg() and diag_pos()

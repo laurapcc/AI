@@ -204,19 +204,16 @@ class MinimaxAlphaBetaStrategy(Strategy):
     ) -> TwoPlayerGameState:
         """Compute next state in the game."""
 
-        # NOTE <YOUR CODE HERE>
-        # return next_state
-
         successors = self.generate_successors(state)
 
         minimax_value = -np.inf
 
         for successor in successors:
             successor_minimax_value = self._min_value(
-                successor,
-                self.max_depth_minimax,
-                -np.inf,
-                np.inf,
+                state=successor,
+                depth=self.max_depth_minimax,
+                alpha=-np.inf,
+                beta=np.inf,
             )
             if (successor_minimax_value > minimax_value):
                 minimax_value = successor_minimax_value
@@ -241,7 +238,10 @@ class MinimaxAlphaBetaStrategy(Strategy):
             successors = self.generate_successors(state)
             for successor in successors:
                 successor_minimax_value = self._max_value(
-                    successor, depth - 1, alpha, beta,
+                    state=successor,
+                    depth=depth-1,
+                    alpha=alpha,
+                    beta=beta,
                 )
                 if (successor_minimax_value < minimax_value):
                     minimax_value = successor_minimax_value
@@ -271,7 +271,10 @@ class MinimaxAlphaBetaStrategy(Strategy):
             successors = self.generate_successors(state)
             for successor in successors:
                 successor_minimax_value = self._min_value(
-                    successor, depth - 1, alpha, beta,
+                    state=successor,
+                    depth=depth-1,
+                    alpha=alpha,
+                    beta=beta,
                 )
                 if (successor_minimax_value > minimax_value):
                     minimax_value = successor_minimax_value
